@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vildes aften</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1e1428; min-height: 100vh; display: flex; justify-content: center; padding: 2rem 1rem; }
+    .wrap { width: 100%; max-width: 480px; }
+    h1 { font-size: 24px; font-weight: 500; color: #e8d9f5; margin-bottom: 4px; }
+    .sub { font-size: 14px; color: #9b85b5; margin-bottom: 20px; }
+    .progress-wrap { height: 8px; background: #3a2a52; border-radius: 8px; margin-bottom: 20px; }
+    .progress-bar { height: 8px; border-radius: 8px; background: #9b59b6; transition: width 0.3s; }
+    .item { display: flex; align-items: center; gap: 16px; padding: 14px 16px; border-radius: 14px; border: 1px solid #3a2a52; background: #2a1e3e; margin-bottom: 10px; cursor: pointer; transition: background 0.15s; user-select: none; -webkit-tap-highlight-color: transparent; }
+    .item.done { background: #3d2a5a; border-color: #7d4fa0; }
+    .item:active { transform: scale(0.99); }
+    .emoji { font-size: 22px; width: 28px; text-align: center; }
+    .label { font-size: 18px; color: #e8d9f5; flex: 1; }
+    .item.done .label { color: #b07fd4; text-decoration: line-through; }
+    .checkbox { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #5a3d7a; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .item.done .checkbox { border-color: #9b59b6; background: #3d2a5a; }
+    .checkmark { display: none; font-size: 18px; color: #9b59b6; }
+    .item.done .checkmark { display: block; }
+    .done-msg { display: none; text-align: center; padding: 28px 0 12px; font-size: 20px; color: #b07fd4; font-weight: 500; line-height: 1.6; }
+    .done-msg span { font-size: 14px; color: #9b85b5; display: block; margin-top: 4px; }
+    .reset-btn { display: none; margin: 12px auto 0; padding: 10px 24px; font-size: 15px; border-radius: 10px; border: 1px solid #5a3d7a; background: #2a1e3e; cursor: pointer; color: #b07fd4; }
+    .reset-btn:active { background: #3d2a5a; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Godnat, Vilde! 🐨🌙</h1>
+    <p class="sub">Hak punkterne af ét ad gangen</p>
+    <div class="progress-wrap"><div class="progress-bar" id="bar" style="width:0%"></div></div>
+    <div id="list"></div>
+    <div class="done-msg" id="done-msg">
+      Sov godt! Panda sover også 🐨💤
+      <span>Godnat!</span>
+    </div>
+    <button class="reset-btn" id="reset-btn" onclick="reset()">Start forfra</button>
+  </div>
+
+  <script>
+    const items = [
+      { label: "Tag tøj af", emoji: "👖" },
+      { label: "Tisse", emoji: "🚽" },
+      { label: "Børst tænder", emoji: "🦷" },
+      { label: "Tag nattøj på", emoji: "🩳" },
+      { label: "Læse", emoji: "📖" },
+      { label: "Høre lydbog", emoji: "🎧" },
+      { label: "Sove", emoji: "😴" }
+    ];
+
+    let checked = new Array(items.length).fill(false);
+
+    function render() {
+      const list = document.getElementById('list');
+      list.innerHTML = '';
+      items.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = 'item' + (checked[i] ? ' done' : '');
+        div.onclick = () => toggle(i);
+        div.innerHTML = `
+          <span class="emoji">${item.emoji}</span>
+          <span class="label">${item.label}</span>
+          <div class="checkbox"><span class="checkmark">✓</span></div>`;
+        list.appendChild(div);
+      });
+      const count = checked.filter(Boolean).length;
+      document.getElementById('bar').style.width = (count / items.length * 100) + '%';
+      const allDone = count === items.length;
+      document.getElementById('done-msg').style.display = allDone ? 'block' : 'none';
+      document.getElementById('reset-btn').style.display = allDone ? 'block' : 'none';
+    }
+
+    function toggle(i) { checked[i] = !checked[i]; render(); }
+    function reset() { checked = new Array(items.length).fill(false); render(); }
+
+    render();
+  </script>
+</body>
+</html>
